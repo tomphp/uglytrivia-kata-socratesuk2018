@@ -24,9 +24,9 @@ class Game {
     }
 
     fun add(playerName: String): Boolean {
-        players.players.add(Player(playerName))
+        players.add(Player(playerName))
         println(playerName + " was added")
-        println("They are player number " + players.numberOfPlayers())
+        println("They are player number " + players.count())
         return true
     }
 
@@ -119,8 +119,7 @@ class Game {
 
     private fun nextPlayer() {
         currentPlayer++
-        if (currentPlayer == players.numberOfPlayers())
+        if (currentPlayer == players.count())
             currentPlayer = 0
     }
-
 }
