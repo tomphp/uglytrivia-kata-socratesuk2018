@@ -39,34 +39,36 @@ class Game {
     }
 
     fun roll(roll: Int) {
+        val r = Roll(roll)
+
         println(players[currentPlayer].name + " is the current player")
-        println("They have rolled a " + roll)
+        println("They have rolled a " + r.value)
 
         if (players[currentPlayer].inPenaltyBox) {
-            if (isEven(roll)) {
-                handleEvenRollWhenInPenaltyBox(roll)
+            if (!r.isEven()) {
+                handleOddRollWhenInPenaltyBox(r)
             } else {
-                handleOddRollWhenInPenaltyBox()
+                handleEvenRollWhenInPenaltyBox()
             }
         } else {
-            move(roll)
+            move(r)
         }
     }
 
-    private fun handleOddRollWhenInPenaltyBox() {
+    private fun handleEvenRollWhenInPenaltyBox() {
         println(players[currentPlayer].name + " is not getting out of the penalty box")
         isGettingOutOfPenaltyBox = false
     }
 
-    private fun handleEvenRollWhenInPenaltyBox(roll: Int) {
+    private fun handleOddRollWhenInPenaltyBox(roll: Roll) {
         isGettingOutOfPenaltyBox = true
 
         println(players[currentPlayer].name + " is getting out of the penalty box")
         move(roll)
     }
 
-    private fun move(roll: Int) {
-        players[currentPlayer].move(Roll(roll))
+    private fun move(roll: Roll) {
+        players[currentPlayer].move(roll)
 
         println(players[currentPlayer].name
                 + "'s new location is "
@@ -74,8 +76,6 @@ class Game {
         println("The category is " + currentCategory())
         askQuestion()
     }
-
-    private fun isEven(roll: Int) = roll % 2 != 0
 
     private fun askQuestion() {
         if (currentCategory() === "Pop")
