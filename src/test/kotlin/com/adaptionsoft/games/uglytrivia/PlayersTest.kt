@@ -17,4 +17,30 @@ class PlayersTest {
 
         assertEquals(1, players.count())
     }
+
+    @Test
+    fun `knows current player`() {
+        players.add(Player("Joe"))
+
+        assertEquals(players.getCurrentPlayer(), Player("Joe"))
+    }
+
+    @Test
+    fun `moves to next player`() {
+        players.add(Player("Joe"))
+        players.add(Player("Mike"))
+        players.nextPlayer()
+
+        assertEquals(players.getCurrentPlayer(), Player("Mike"))
+    }
+
+    @Test
+    fun `moves back to initial player`() {
+        players.add(Player("Joe"))
+        players.add(Player("Mike"))
+        players.nextPlayer()
+        players.nextPlayer()
+
+        assertEquals(players.getCurrentPlayer(), Player("Joe"))
+    }
 }
