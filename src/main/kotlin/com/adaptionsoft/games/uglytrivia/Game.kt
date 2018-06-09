@@ -1,10 +1,10 @@
 package com.adaptionsoft.games.uglytrivia
 
 import java.util.*
-import kotlin.collections.ArrayList
 
 class Game {
-    var players = ArrayList<Player>()
+
+    var players = Players()
 
     var popQuestions = LinkedList<Any>()
     var scienceQuestions = LinkedList<Any>()
@@ -19,60 +19,52 @@ class Game {
             popQuestions.addLast("Pop Question " + i)
             scienceQuestions.addLast("Science Question " + i)
             sportsQuestions.addLast("Sports Question " + i)
-            rockQuestions.addLast(createRockQuestion(i))
+            rockQuestions.addLast("Rock Question " + i)
         }
     }
 
-    fun createRockQuestion(index: Int): String {
-        return "Rock Question " + index
-    }
-
     fun add(playerName: String): Boolean {
-        players.add(Player(playerName))
+        players.players.add(Player(playerName))
         println(playerName + " was added")
-        println("They are player number " + howManyPlayers())
+        println("They are player number " + players.numberOfPlayers())
         return true
     }
 
-    fun howManyPlayers(): Int {
-        return players.size
-    }
+    fun roll(roll: Int) = roll(Roll(roll))
 
-    fun roll(roll: Int) {
-        val r = Roll(roll)
+    private fun roll(roll: Roll) {
+        println(players.players[currentPlayer].name + " is the current player")
+        println("They have rolled a " + roll.value)
 
-        println(players[currentPlayer].name + " is the current player")
-        println("They have rolled a " + r.value)
-
-        if (players[currentPlayer].inPenaltyBox) {
-            if (!r.isEven()) {
-                handleOddRollWhenInPenaltyBox(r)
-            } else {
+        if (players.players[currentPlayer].inPenaltyBox) {
+            if (roll.isEven()) {
                 handleEvenRollWhenInPenaltyBox()
+            } else {
+                handleOddRollWhenInPenaltyBox(roll)
             }
         } else {
-            move(r)
+            move(roll)
         }
     }
 
     private fun handleEvenRollWhenInPenaltyBox() {
-        println(players[currentPlayer].name + " is not getting out of the penalty box")
+        println(players.players[currentPlayer].name + " is not getting out of the penalty box")
         isGettingOutOfPenaltyBox = false
     }
 
     private fun handleOddRollWhenInPenaltyBox(roll: Roll) {
         isGettingOutOfPenaltyBox = true
 
-        println(players[currentPlayer].name + " is getting out of the penalty box")
+        println(players.players[currentPlayer].name + " is getting out of the penalty box")
         move(roll)
     }
 
     private fun move(roll: Roll) {
-        players[currentPlayer].move(roll)
+        players.players[currentPlayer].move(roll)
 
-        println(players[currentPlayer].name
+        println(players.players[currentPlayer].name
                 + "'s new location is "
-                + players[currentPlayer].place)
+                + players.players[currentPlayer].place)
         println("The category is " + currentCategory())
         askQuestion()
     }
@@ -88,7 +80,7 @@ class Game {
             println(rockQuestions.removeFirst())
     }
 
-    private fun currentCategory(): String = when (players[currentPlayer].place) {
+    private fun currentCategory(): String = when (players.players[currentPlayer].place) {
         0, 4, 8 -> "Pop"
         1, 5, 9 -> "Science"
         2, 6, 10 -> "Sports"
@@ -96,7 +88,7 @@ class Game {
     }
 
     fun wasCorrectlyAnswered(): Boolean {
-        return if (players[currentPlayer].inPenaltyBox && !isGettingOutOfPenaltyBox) {
+        return if (players.players[currentPlayer].inPenaltyBox && !isGettingOutOfPenaltyBox) {
             nextPlayer()
             true
         } else {
@@ -105,23 +97,21 @@ class Game {
     }
 
     private fun handleCorrectAnswer(): Boolean {
-        println("Answer was correct!!!!")
-        players[currentPlayer].purse++
-        println(players[currentPlayer].name
-                + " now has "
-                + players[currentPlayer].purse
-                + " Gold Coins.")
+        val player = players.players[currentPlayer]
 
-        val winner = didPlayerWin()
+        println("Answer was correct!!!!")
+        player.incrementScore()
+        println("${player.name} now has ${player.purse} Gold Coins.")
+
         nextPlayer()
 
-        return winner
+        return !player.isWinner()
     }
 
     fun wrongAnswer(): Boolean {
         println("Question was incorrectly answered")
-        println(players[currentPlayer].name + " was sent to the penalty box")
-        players[currentPlayer].inPenaltyBox = true
+        println(players.players[currentPlayer].name + " was sent to the penalty box")
+        players.players[currentPlayer].inPenaltyBox = true
 
         nextPlayer()
         return true
@@ -129,12 +119,8 @@ class Game {
 
     private fun nextPlayer() {
         currentPlayer++
-        if (currentPlayer == howManyPlayers())
+        if (currentPlayer == players.numberOfPlayers())
             currentPlayer = 0
     }
 
-    private fun didPlayerWin(): Boolean {
-        val winningNUmberOfCoins = 6
-        return players[currentPlayer].purse != winningNUmberOfCoins
-    }
 }
