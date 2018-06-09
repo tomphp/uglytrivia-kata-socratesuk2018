@@ -15,7 +15,7 @@ class PlayerTest {
     fun moveMovesThePlayerForwardFromSpaceZero() {
         val player = Player("Who Cares")
 
-        player.move(3)
+        player.move(Roll(3))
 
         assertEquals(3, player.place)
     }
@@ -24,8 +24,8 @@ class PlayerTest {
     fun moveMovesThePlayerFrowardFromNonZeroPlace() {
         val player = Player("Who Cares")
 
-        player.move(3)
-        player.move(2)
+        player.move(Roll(3))
+        player.move(Roll(2))
 
         assertEquals(5, player.place)
     }
@@ -34,9 +34,9 @@ class PlayerTest {
     fun moveWrapsAroundTheBoard() {
         val player = Player("Who Cares")
 
-        player.move(6)
-        player.move(5)
-        player.move(3)
+        player.move(Roll(6))
+        player.move(Roll(5))
+        player.move(Roll(3))
 
         assertEquals(2, player.place)
     }

@@ -4,8 +4,6 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class Game {
-    val BOARD_SIZE = 12
-
     var players = ArrayList<Player>()
 
     var popQuestions = LinkedList<Any>()
@@ -68,7 +66,7 @@ class Game {
     }
 
     private fun move(roll: Int) {
-        players[currentPlayer].move(roll)
+        players[currentPlayer].move(Roll(roll))
 
         println(players[currentPlayer].name
                 + "'s new location is "
