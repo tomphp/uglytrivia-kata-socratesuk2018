@@ -3,8 +3,6 @@ package com.adaptionsoft.games.uglytrivia
 import java.util.*
 import kotlin.collections.ArrayList
 
-data class Player(val name: String, var place: Int = 0, var purse: Int = 0, var inPenaltyBox: Boolean = false)
-
 class Game {
     val BOARD_SIZE = 12
 
@@ -70,10 +68,7 @@ class Game {
     }
 
     private fun move(roll: Int) {
-        players[currentPlayer].place = players[currentPlayer].place + roll
-        if (players[currentPlayer].place > 11) {
-            players[currentPlayer].place = players[currentPlayer].place - BOARD_SIZE
-        }
+        players[currentPlayer].move(roll)
 
         println(players[currentPlayer].name
                 + "'s new location is "
