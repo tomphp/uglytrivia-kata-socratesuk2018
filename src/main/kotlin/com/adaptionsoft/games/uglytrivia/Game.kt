@@ -3,6 +3,8 @@ package com.adaptionsoft.games.uglytrivia
 import java.util.*
 
 class Game {
+    val BOARD_SIZE = 12
+
     var players = ArrayList<Any>()
     var places = IntArray(6)
     var purses = IntArray(6)
@@ -55,36 +57,42 @@ class Game {
         println("They have rolled a " + roll)
 
         if (inPenaltyBox[currentPlayer]) {
-            if (roll % 2 != 0) {
-                isGettingOutOfPenaltyBox = true
-
-                println(players[currentPlayer].toString() + " is getting out of the penalty box")
-                places[currentPlayer] = places[currentPlayer] + roll
-                if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12
-
-                println(players[currentPlayer].toString()
-                        + "'s new location is "
-                        + places[currentPlayer])
-                println("The category is " + currentCategory())
-                askQuestion()
+            if (isEven(roll)) {
+                handleEvenRollWhenInPenaltyBox(roll)
             } else {
-                println(players[currentPlayer].toString() + " is not getting out of the penalty box")
-                isGettingOutOfPenaltyBox = false
+                handleOddRollWhenInPenaltyBox()
             }
-
         } else {
+            move(roll)
+        }
+    }
 
-            places[currentPlayer] = places[currentPlayer] + roll
-            if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12
+    private fun handleOddRollWhenInPenaltyBox() {
+        println(players[currentPlayer].toString() + " is not getting out of the penalty box")
+        isGettingOutOfPenaltyBox = false
+    }
 
-            println(players[currentPlayer].toString()
-                    + "'s new location is "
-                    + places[currentPlayer])
-            println("The category is " + currentCategory())
-            askQuestion()
+    private fun handleEvenRollWhenInPenaltyBox(roll: Int) {
+        isGettingOutOfPenaltyBox = true
+
+        println(players[currentPlayer].toString() + " is getting out of the penalty box")
+        move(roll)
+    }
+
+    private fun move(roll: Int) {
+        places[currentPlayer] = places[currentPlayer] + roll
+        if (places[currentPlayer] > 11) {
+            places[currentPlayer] = places[currentPlayer] - BOARD_SIZE
         }
 
+        println(players[currentPlayer].toString()
+                + "'s new location is "
+                + places[currentPlayer])
+        println("The category is " + currentCategory())
+        askQuestion()
     }
+
+    private fun isEven(roll: Int) = roll % 2 != 0
 
     private fun askQuestion() {
         if (currentCategory() === "Pop")
