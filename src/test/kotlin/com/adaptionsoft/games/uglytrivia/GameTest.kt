@@ -10,6 +10,8 @@ import java.io.PrintStream
 import java.util.*
 
 class GameTest {
+    val game = Game()
+
     @Test
     fun `the golden master`() {
         val actual = captureStdout { run() }
@@ -26,21 +28,19 @@ class GameTest {
     }
 
     private fun run() {
-        val aGame = Game()
-
-        aGame.add("Chet")
-        aGame.add("Pat")
-        aGame.add("Sue")
+        game.add("Chet")
+        game.add("Pat")
+        game.add("Sue")
 
         val rand = Random(1)
 
         do {
-            aGame.roll(rand.nextInt(5) + 1)
+            game.roll(rand.nextInt(5) + 1)
 
             if (rand.nextInt(9) == 7) {
-                GameRunner.notAWinner = aGame.wrongAnswer()
+                GameRunner.notAWinner = game.wrongAnswer()
             } else {
-                GameRunner.notAWinner = aGame.wasCorrectlyAnswered()
+                GameRunner.notAWinner = game.wasCorrectlyAnswered()
             }
         } while (GameRunner.notAWinner)
 
