@@ -10,7 +10,23 @@ class GameEngine(val players: Players)
     private var isGettingOutOfPenaltyBox: Boolean = false
 
     fun answer(play: Game.Play): Boolean {
-        play(play.roll)
+        val currentPlayer = players.getCurrentPlayer()
+        playerRolledMessage(currentPlayer, play.roll)
+
+        if (currentPlayer.inPenaltyBox && play.roll.isEven()) {
+            stuckInPenaltyBoxMessage(currentPlayer)
+            isGettingOutOfPenaltyBox = false
+        } else {
+
+            if (currentPlayer.inPenaltyBox) {
+                gettingOutOfPenaltyBoxMessage(currentPlayer)
+                isGettingOutOfPenaltyBox = true
+            }
+
+            currentPlayer.move(play.roll)
+            playerMovedMessage(currentPlayer)
+            askQuestion()
+        }
 
         if (play.answeredCorrectly) {
             val player = players.getCurrentPlayer()
@@ -31,26 +47,6 @@ class GameEngine(val players: Players)
             players.nextPlayer()
             return true
         }
-    }
-
-    private fun play(roll: Roll) {
-        val currentPlayer = players.getCurrentPlayer()
-        playerRolledMessage(currentPlayer, roll)
-
-        if (currentPlayer.inPenaltyBox && roll.isEven()) {
-            stuckInPenaltyBoxMessage(currentPlayer)
-            isGettingOutOfPenaltyBox = false
-            return
-        }
-
-        if (currentPlayer.inPenaltyBox) {
-            gettingOutOfPenaltyBoxMessage(currentPlayer)
-            isGettingOutOfPenaltyBox = true
-        }
-
-        currentPlayer.move(roll)
-        playerMovedMessage(currentPlayer)
-        askQuestion()
     }
 
     private fun askQuestion() {
