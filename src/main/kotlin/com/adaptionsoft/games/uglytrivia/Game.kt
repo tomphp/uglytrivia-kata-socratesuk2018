@@ -1,25 +1,14 @@
 package com.adaptionsoft.games.uglytrivia
 
-import java.util.*
-
 class Game {
     var players = Players()
 
-    var popQuestions = LinkedList<String>()
-    var scienceQuestions = LinkedList<String>()
-    var sportsQuestions = LinkedList<String>()
-    var rockQuestions = LinkedList<String>()
+    val popCategory = QuestionCategory("Pop")
+    val scienceCategory = QuestionCategory("Science")
+    val sportsCategory = QuestionCategory("Sports")
+    val rockCategory = QuestionCategory("Rock")
 
     var isGettingOutOfPenaltyBox: Boolean = false
-
-    init {
-        for (i in 0..49) {
-            popQuestions.addLast("Pop Question " + i)
-            scienceQuestions.addLast("Science Question " + i)
-            sportsQuestions.addLast("Sports Question " + i)
-            rockQuestions.addLast("Rock Question " + i)
-        }
-    }
 
     fun add(playerName: String): Boolean {
         players.add(Player(playerName))
@@ -62,26 +51,19 @@ class Game {
         currentPlayer.move(roll)
 
         println("${currentPlayer.name}'s new location is ${currentPlayer.place}")
-        println("The category is " + currentCategory())
+        println("The category is " + currentCategory().name)
         askQuestion()
     }
 
     private fun askQuestion() {
-        if (currentCategory() === "Pop")
-            println(popQuestions.removeFirst())
-        if (currentCategory() === "Science")
-            println(scienceQuestions.removeFirst())
-        if (currentCategory() === "Sports")
-            println(sportsQuestions.removeFirst())
-        if (currentCategory() === "Rock")
-            println(rockQuestions.removeFirst())
+        println(currentCategory().questions.removeFirst())
     }
 
-    private fun currentCategory(): String = when (players.getCurrentPlayer().place) {
-        0, 4, 8 -> "Pop"
-        1, 5, 9 -> "Science"
-        2, 6, 10 -> "Sports"
-        else -> "Rock"
+    private fun currentCategory(): QuestionCategory = when (players.getCurrentPlayer().place) {
+        0, 4, 8 -> popCategory
+        1, 5, 9 -> scienceCategory
+        2, 6, 10 -> sportsCategory
+        else -> rockCategory
     }
 
     fun wasCorrectlyAnswered(): Boolean {
