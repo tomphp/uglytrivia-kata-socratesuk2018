@@ -19,4 +19,8 @@ class QuestionCategory (val name: String){
             addQuestion("$name Question $i")
         }
     }
+
+    fun takeCard(): String {
+        return questions.removeFirst()
+    }
 }

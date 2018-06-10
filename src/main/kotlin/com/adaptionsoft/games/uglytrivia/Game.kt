@@ -20,43 +20,32 @@ class Game {
     fun roll(roll: Int) = roll(Roll(roll))
 
     private fun roll(roll: Roll) {
-        println(players.getCurrentPlayer().name + " is the current player")
+        val currentPlayer = players.getCurrentPlayer()
+        println(currentPlayer.name + " is the current player")
         println("They have rolled a " + roll.value)
 
-        if (players.getCurrentPlayer().inPenaltyBox) {
-            if (roll.isEven()) {
-                handleEvenRollWhenInPenaltyBox()
-            } else {
-                handleOddRollWhenInPenaltyBox(roll)
-            }
-        } else {
-            move(roll)
+        if (stuckInPenaltyBox(currentPlayer, roll)) {
+            println("${currentPlayer.name} is not getting out of the penalty box")
+            isGettingOutOfPenaltyBox = false
+            return
         }
-    }
+        if (currentPlayer.inPenaltyBox) {
+            println("${currentPlayer.name} is getting out of the penalty box")
+            isGettingOutOfPenaltyBox = true
+        }
 
-    private fun handleEvenRollWhenInPenaltyBox() {
-        println(players.getCurrentPlayer().name + " is not getting out of the penalty box")
-        isGettingOutOfPenaltyBox = false
-    }
-
-    private fun handleOddRollWhenInPenaltyBox(roll: Roll) {
-        isGettingOutOfPenaltyBox = true
-
-        println(players.getCurrentPlayer().name + " is getting out of the penalty box")
-        move(roll)
-    }
-
-    private fun move(roll: Roll) {
-        val currentPlayer = players.getCurrentPlayer()
         currentPlayer.move(roll)
-
         println("${currentPlayer.name}'s new location is ${currentPlayer.place}")
         println("The category is " + currentCategory().name)
         askQuestion()
     }
 
+    private fun stuckInPenaltyBox(player: Player, roll: Roll): Boolean {
+        return player.inPenaltyBox && roll.isEven()
+    }
+
     private fun askQuestion() {
-        println(currentCategory().questions.removeFirst())
+        println(currentCategory().takeCard())
     }
 
     private fun currentCategory(): QuestionCategory = when (players.getCurrentPlayer().place) {
@@ -67,24 +56,17 @@ class Game {
     }
 
     fun wasCorrectlyAnswered(): Boolean {
-        return if (players.getCurrentPlayer().inPenaltyBox && !isGettingOutOfPenaltyBox) {
+        val player = players.getCurrentPlayer()
+        return if (player.inPenaltyBox && !isGettingOutOfPenaltyBox) {
             players.nextPlayer()
             true
         } else {
-            handleCorrectAnswer()
+            println("Answer was correct!!!!")
+            player.incrementScore()
+            println("${player.name} now has ${player.purse} Gold Coins.")
+            players.nextPlayer()
+            !player.isWinner()
         }
-    }
-
-    private fun handleCorrectAnswer(): Boolean {
-        val player = players.getCurrentPlayer()
-
-        println("Answer was correct!!!!")
-        player.incrementScore()
-        println("${player.name} now has ${player.purse} Gold Coins.")
-
-        players.nextPlayer()
-
-        return !player.isWinner()
     }
 
     fun wrongAnswer(): Boolean {

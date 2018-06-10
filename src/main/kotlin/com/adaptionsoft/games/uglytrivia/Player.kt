@@ -4,6 +4,7 @@ data class Player(val name: String, var place: Int = 0, var purse: Int = 0, var 
     private val BOARD_SIZE = 12
 
     fun move(roll: Roll) {
+
         place = (place + roll.value) % BOARD_SIZE
     }
 
