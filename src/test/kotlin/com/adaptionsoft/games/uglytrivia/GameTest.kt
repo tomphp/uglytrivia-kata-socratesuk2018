@@ -9,7 +9,6 @@ import java.io.InputStream
 import java.io.PrintStream
 import java.util.*
 
-
 class GameTest {
     @Test
     fun `the golden master`() {

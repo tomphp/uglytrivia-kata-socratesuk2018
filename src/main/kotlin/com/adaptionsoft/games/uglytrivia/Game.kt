@@ -12,8 +12,7 @@ class Game {
 
     fun add(playerName: String): Boolean {
         players.add(Player(playerName))
-        println(playerName + " was added")
-        println("They are player number " + players.count())
+        playerAddedMesasge(playerName)
         return true
     }
 
@@ -21,22 +20,20 @@ class Game {
 
     private fun roll(roll: Roll) {
         val currentPlayer = players.getCurrentPlayer()
-        println(currentPlayer.name + " is the current player")
-        println("They have rolled a " + roll.value)
+        playerRolledMessage(currentPlayer, roll)
 
         if (stuckInPenaltyBox(currentPlayer, roll)) {
-            println("${currentPlayer.name} is not getting out of the penalty box")
+            stuckInPenaltyBoxMessage(currentPlayer)
             isGettingOutOfPenaltyBox = false
             return
         }
         if (currentPlayer.inPenaltyBox) {
-            println("${currentPlayer.name} is getting out of the penalty box")
+            gettingOutOfPenaltyBoxMessage(currentPlayer)
             isGettingOutOfPenaltyBox = true
         }
 
         currentPlayer.move(roll)
-        println("${currentPlayer.name}'s new location is ${currentPlayer.place}")
-        println("The category is " + currentCategory().name)
+        playerMovedMessage(currentPlayer)
         askQuestion()
     }
 
@@ -46,25 +43,19 @@ class Game {
             players.nextPlayer()
             true
         } else {
-            println("Answer was correct!!!!")
             player.incrementScore()
-            println("${player.name} now has ${player.purse} Gold Coins.")
+            playerAnsweredCorrectlyMessage(player)
             players.nextPlayer()
             !player.isWinner()
         }
     }
 
     fun wrongAnswer(): Boolean {
-        println("Question was incorrectly answered")
-        println(players.getCurrentPlayer().name + " was sent to the penalty box")
+        playerAnsweredIncorrectlyMessage()
         players.getCurrentPlayer().inPenaltyBox = true
 
         players.nextPlayer()
         return true
-    }
-
-    private fun stuckInPenaltyBox(player: Player, roll: Roll): Boolean {
-        return player.inPenaltyBox && roll.isEven()
     }
 
     private fun askQuestion() {
@@ -76,5 +67,42 @@ class Game {
         1, 5, 9 -> scienceCategory
         2, 6, 10 -> sportsCategory
         else -> rockCategory
+    }
+
+    private fun playerRolledMessage(currentPlayer: Player, roll: Roll) {
+        println(currentPlayer.name + " is the current player")
+        println("They have rolled a " + roll.value)
+    }
+
+    private fun playerAnsweredIncorrectlyMessage() {
+        println("Question was incorrectly answered")
+        println(players.getCurrentPlayer().name + " was sent to the penalty box")
+    }
+
+    private fun playerAnsweredCorrectlyMessage(player: Player) {
+        println("Answer was correct!!!!")
+        println("${player.name} now has ${player.purse} Gold Coins.")
+    }
+
+    private fun stuckInPenaltyBox(player: Player, roll: Roll): Boolean {
+        return player.inPenaltyBox && roll.isEven()
+    }
+
+    private fun playerMovedMessage(currentPlayer: Player) {
+        println("${currentPlayer.name}'s new location is ${currentPlayer.place}")
+        println("The category is " + currentCategory().name)
+    }
+
+    private fun gettingOutOfPenaltyBoxMessage(currentPlayer: Player) {
+        println("${currentPlayer.name} is getting out of the penalty box")
+    }
+
+    private fun stuckInPenaltyBoxMessage(currentPlayer: Player) {
+        println("${currentPlayer.name} is not getting out of the penalty box")
+    }
+
+    private fun playerAddedMesasge(playerName: String) {
+        println(playerName + " was added")
+        println("They are player number " + players.count())
     }
 }
