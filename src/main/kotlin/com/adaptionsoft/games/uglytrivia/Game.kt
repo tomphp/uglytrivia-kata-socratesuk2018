@@ -3,10 +3,10 @@ package com.adaptionsoft.games.uglytrivia
 class Game {
     var players = Players()
 
-    val popCategory = QuestionCategory("Pop")
-    val scienceCategory = QuestionCategory("Science")
-    val sportsCategory = QuestionCategory("Sports")
-    val rockCategory = QuestionCategory("Rock")
+    private val popCategory = QuestionCategory("Pop")
+    private val scienceCategory = QuestionCategory("Science")
+    private val sportsCategory = QuestionCategory("Sports")
+    private val rockCategory = QuestionCategory("Rock")
 
     var isGettingOutOfPenaltyBox: Boolean = false
 
@@ -40,21 +40,6 @@ class Game {
         askQuestion()
     }
 
-    private fun stuckInPenaltyBox(player: Player, roll: Roll): Boolean {
-        return player.inPenaltyBox && roll.isEven()
-    }
-
-    private fun askQuestion() {
-        println(currentCategory().takeCard())
-    }
-
-    private fun currentCategory(): QuestionCategory = when (players.getCurrentPlayer().place) {
-        0, 4, 8 -> popCategory
-        1, 5, 9 -> scienceCategory
-        2, 6, 10 -> sportsCategory
-        else -> rockCategory
-    }
-
     fun wasCorrectlyAnswered(): Boolean {
         val player = players.getCurrentPlayer()
         return if (player.inPenaltyBox && !isGettingOutOfPenaltyBox) {
@@ -78,4 +63,18 @@ class Game {
         return true
     }
 
+    private fun stuckInPenaltyBox(player: Player, roll: Roll): Boolean {
+        return player.inPenaltyBox && roll.isEven()
+    }
+
+    private fun askQuestion() {
+        println(currentCategory().takeCard())
+    }
+
+    private fun currentCategory(): QuestionCategory = when (players.getCurrentPlayer().place) {
+        0, 4, 8 -> popCategory
+        1, 5, 9 -> scienceCategory
+        2, 6, 10 -> sportsCategory
+        else -> rockCategory
+    }
 }

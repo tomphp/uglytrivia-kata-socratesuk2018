@@ -1,11 +1,15 @@
 package com.adaptionsoft.games.uglytrivia
 
-data class Player(val name: String, var place: Int = 0, var purse: Int = 0, var inPenaltyBox: Boolean = false) {
-    private val BOARD_SIZE = 12
+data class Player(val name: String) {
+    private val boardSize = 12
+
+    var place: Int = 0
+    var purse: Int = 0
+    var inPenaltyBox: Boolean = false
 
     fun move(roll: Roll) {
 
-        place = (place + roll.value) % BOARD_SIZE
+        place = (place + roll.value) % boardSize
     }
 
     fun incrementScore() {
