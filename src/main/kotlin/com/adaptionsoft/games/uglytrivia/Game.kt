@@ -4,7 +4,7 @@ class Game {
     var players = Players()
 
     private var play = Play(Roll(1))
-    private val gameEngine = GameEngine(players)
+    private val gameEngine = GameCore(players)
 
     class Play(val roll: Roll, var answeredCorrectly: Boolean = false)
 
@@ -23,13 +23,13 @@ class Game {
     fun wasCorrectlyAnswered(): Boolean {
         play.answeredCorrectly = true
 
-        return gameEngine.answer(play)
+        return gameEngine.playRound(play)
     }
 
     fun wrongAnswer(): Boolean {
         play.answeredCorrectly = false
 
-        return gameEngine.answer(play)
+        return gameEngine.playRound(play)
     }
 
     private fun playerAddedMessage(playerName: String) {

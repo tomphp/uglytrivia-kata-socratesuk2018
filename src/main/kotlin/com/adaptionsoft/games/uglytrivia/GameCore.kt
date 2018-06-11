@@ -1,51 +1,51 @@
 package com.adaptionsoft.games.uglytrivia
 
-class GameEngine(val players: Players)
+class GameCore(val players: Players)
 {
     private val popCategory = QuestionCategory("Pop")
     private val scienceCategory = QuestionCategory("Science")
     private val sportsCategory = QuestionCategory("Sports")
     private val rockCategory = QuestionCategory("Rock")
 
-    private var isGettingOutOfPenaltyBox: Boolean = false
+    fun playRound(play: Game.Play): Boolean {
+        val player = players.getCurrentPlayer()
+        playerRolledMessage(player, play.roll)
 
-    fun answer(play: Game.Play): Boolean {
-        val currentPlayer = players.getCurrentPlayer()
-        playerRolledMessage(currentPlayer, play.roll)
+        playRound(player, play)
 
-        if (currentPlayer.inPenaltyBox && play.roll.isEven()) {
-            stuckInPenaltyBoxMessage(currentPlayer)
-            isGettingOutOfPenaltyBox = false
-        } else {
+        val isWinner = player.isWinner()
 
-            if (currentPlayer.inPenaltyBox) {
-                gettingOutOfPenaltyBoxMessage(currentPlayer)
-                isGettingOutOfPenaltyBox = true
-            }
+        players.nextPlayer()
 
-            currentPlayer.move(play.roll)
-            playerMovedMessage(currentPlayer)
-            askQuestion()
+        return !isWinner
+    }
+
+    private fun playRound(player: Player, play: Game.Play) {
+        var isGettingOutOfPenaltyBox = false
+
+        if (player.inPenaltyBox && play.roll.isEven()) {
+            stuckInPenaltyBoxMessage(player)
+            return
         }
 
+        if (player.inPenaltyBox) {
+            gettingOutOfPenaltyBoxMessage(player)
+            isGettingOutOfPenaltyBox = true
+        }
+
+        player.move(play.roll)
+        playerMovedMessage(player)
+
+        askQuestion()
+
         if (play.answeredCorrectly) {
-            val player = players.getCurrentPlayer()
-
-            if (player.inPenaltyBox && !isGettingOutOfPenaltyBox) {
-                players.nextPlayer()
-                return true
+            if (!player.inPenaltyBox || isGettingOutOfPenaltyBox) {
+                player.incrementScore()
+                playerAnsweredCorrectlyMessage(player)
             }
-
-            player.incrementScore()
-            playerAnsweredCorrectlyMessage(player)
-            players.nextPlayer()
-            return !player.isWinner()
         } else {
             playerAnsweredIncorrectlyMessage()
             players.getCurrentPlayer().inPenaltyBox = true
-
-            players.nextPlayer()
-            return true
         }
     }
 
