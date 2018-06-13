@@ -21,16 +21,16 @@ class GameCore(val players: Players)
     }
 
     private fun playRound(player: Player, play: Game.Play) {
-        var isGettingOutOfPenaltyBox = false
+        var inPenaltyBox = player.inPenaltyBox
 
-        if (player.inPenaltyBox && play.roll.isEven()) {
-            stuckInPenaltyBoxMessage(player)
-            return
-        }
+        if (inPenaltyBox) {
+            if (play.roll.isEven()) {
+                stuckInPenaltyBoxMessage(player)
+                return
+            }
 
-        if (player.inPenaltyBox) {
             gettingOutOfPenaltyBoxMessage(player)
-            isGettingOutOfPenaltyBox = true
+            inPenaltyBox = false
         }
 
         player.move(play.roll)
@@ -39,7 +39,7 @@ class GameCore(val players: Players)
         askQuestion()
 
         if (play.answeredCorrectly) {
-            if (!player.inPenaltyBox || isGettingOutOfPenaltyBox) {
+            if (!inPenaltyBox) {
                 player.incrementScore()
                 playerAnsweredCorrectlyMessage(player)
             }

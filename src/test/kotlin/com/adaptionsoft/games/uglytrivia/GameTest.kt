@@ -43,7 +43,6 @@ class GameTest {
                 GameRunner.notAWinner = game.wasCorrectlyAnswered()
             }
         } while (GameRunner.notAWinner)
-
     }
 
     private fun captureStdout(command: () -> Unit): String {
