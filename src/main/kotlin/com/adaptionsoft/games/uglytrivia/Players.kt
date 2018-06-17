@@ -10,16 +10,17 @@ class Players {
         players.add(player)
     }
 
+    fun playTurn(turn: (Player) -> Boolean) : Boolean {
+        val isWinner = turn(getCurrentPlayer())
+        nextPlayer()
+        return isWinner
+    }
 
-    fun getCurrentPlayer(): Player {
+    private fun getCurrentPlayer(): Player {
         return players[index];
     }
 
-    fun nextPlayer() {
-        index++
-        if (index == count())
-            index = 0
+    private fun nextPlayer() {
+        index = (index + 1) % count()
     }
-
-
 }

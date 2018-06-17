@@ -23,13 +23,13 @@ class Game {
     fun wasCorrectlyAnswered(): Boolean {
         play.answeredCorrectly = true
 
-        return gameEngine.playRound(play)
+        return !players.playTurn { gameEngine.playTurn(it, play) }
     }
 
     fun wrongAnswer(): Boolean {
         play.answeredCorrectly = false
 
-        return gameEngine.playRound(play)
+        return !players.playTurn { gameEngine.playTurn(it, play) }
     }
 
     private fun playerAddedMessage(playerName: String) {

@@ -7,26 +7,15 @@ class GameCore(val players: Players)
     private val sportsCategory = QuestionCategory("Sports")
     private val rockCategory = QuestionCategory("Rock")
 
-    fun playRound(play: Game.Play): Boolean {
-        val player = players.getCurrentPlayer()
+    fun playTurn(player: Player, play: Game.Play): Boolean {
         playerRolledMessage(player, play.roll)
 
-        playRound(player, play)
-
-        val isWinner = player.isWinner()
-
-        players.nextPlayer()
-
-        return !isWinner
-    }
-
-    private fun playRound(player: Player, play: Game.Play) {
         var inPenaltyBox = player.inPenaltyBox
 
         if (inPenaltyBox) {
             if (play.roll.isEven()) {
                 stuckInPenaltyBoxMessage(player)
-                return
+                return false
             }
 
             gettingOutOfPenaltyBoxMessage(player)
@@ -36,7 +25,7 @@ class GameCore(val players: Players)
         player.move(play.roll)
         playerMovedMessage(player)
 
-        askQuestion()
+        askQuestion(player)
 
         if (play.answeredCorrectly) {
             if (!inPenaltyBox) {
@@ -44,16 +33,18 @@ class GameCore(val players: Players)
                 playerAnsweredCorrectlyMessage(player)
             }
         } else {
-            playerAnsweredIncorrectlyMessage()
-            players.getCurrentPlayer().inPenaltyBox = true
+            playerAnsweredIncorrectlyMessage(player)
+            player.inPenaltyBox = true
         }
+
+        return player.isWinner()
     }
 
-    private fun askQuestion() {
-        println(currentCategory().takeCard())
+    private fun askQuestion(player: Player) {
+        println(currentCategory(player).takeCard())
     }
 
-    private fun currentCategory(): QuestionCategory = when (players.getCurrentPlayer().place) {
+    private fun currentCategory(player: Player): QuestionCategory = when (player.place) {
         0, 4, 8 -> popCategory
         1, 5, 9 -> scienceCategory
         2, 6, 10 -> sportsCategory
@@ -65,9 +56,9 @@ class GameCore(val players: Players)
         println("They have rolled a " + roll.value)
     }
 
-    private fun playerAnsweredIncorrectlyMessage() {
+    private fun playerAnsweredIncorrectlyMessage(player: Player) {
         println("Question was incorrectly answered")
-        println(players.getCurrentPlayer().name + " was sent to the penalty box")
+        println("${player.name} was sent to the penalty box")
     }
 
     private fun playerAnsweredCorrectlyMessage(player: Player) {
@@ -77,7 +68,7 @@ class GameCore(val players: Players)
 
     private fun playerMovedMessage(currentPlayer: Player) {
         println("${currentPlayer.name}'s new location is ${currentPlayer.place}")
-        println("The category is " + currentCategory().name)
+        println("The category is " + currentCategory(currentPlayer).name)
     }
 
     private fun gettingOutOfPenaltyBoxMessage(currentPlayer: Player) {
