@@ -3,10 +3,10 @@ package com.adaptionsoft.games.uglytrivia
 class Game {
     var players = Players()
 
-    private var play = Play(Roll(1))
+    private var roll = Roll(1) // Rubbish default
     private val gameEngine = GameCore()
 
-    class Play(val roll: Roll, var answeredCorrectly: Boolean = false)
+    class Play(val roll: Roll, val answeredCorrectly: Boolean = false)
 
     fun add(playerName: String): Boolean {
         players.add(Player(playerName))
@@ -17,19 +17,15 @@ class Game {
     fun roll(roll: Int) = roll(Roll(roll))
 
     private fun roll(roll: Roll) {
-        this.play = Play(roll)
+        this.roll = roll
     }
 
     fun wasCorrectlyAnswered(): Boolean {
-        play.answeredCorrectly = true
-
-        return !players.playTurn { gameEngine.playTurn(it, play) }
+        return !players.playTurn { gameEngine.playTurn(it, Play(roll, true)) }
     }
 
     fun wrongAnswer(): Boolean {
-        play.answeredCorrectly = false
-
-        return !players.playTurn { gameEngine.playTurn(it, play) }
+        return !players.playTurn { gameEngine.playTurn(it, Play(roll, false)) }
     }
 
     private fun playerAddedMessage(playerName: String) {
