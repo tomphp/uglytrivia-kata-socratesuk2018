@@ -1,6 +1,6 @@
 package com.adaptionsoft.games.uglytrivia
 
-class GameCore(val players: Players)
+class GameCore()
 {
     private val popCategory = QuestionCategory("Pop")
     private val scienceCategory = QuestionCategory("Science")

@@ -4,7 +4,7 @@ class Game {
     var players = Players()
 
     private var play = Play(Roll(1))
-    private val gameEngine = GameCore(players)
+    private val gameEngine = GameCore()
 
     class Play(val roll: Roll, var answeredCorrectly: Boolean = false)
 
