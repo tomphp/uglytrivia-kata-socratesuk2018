@@ -14,14 +14,20 @@ class GameCore(private val ui : UI)
 
         bugAddPlayerToThePenaltyBoxIfTheyHaveEverBeenThere(player)
 
-        if (penaltyBox.contains(player)) {
-            penaltyBox.attemptEscape(player, play.roll)
+        if (!penaltyBox.contains(player)) {
+            return playActualTurn(player, play)
         }
+
+        penaltyBox.attemptEscape(player, play.roll)
 
         if (penaltyBox.contains(player)) {
             return false
         }
 
+        return playActualTurn(player, play)
+    }
+
+    private fun playActualTurn(player: Player, play: Game.Play): Boolean {
         move(player, play)
 
         takeQuestionCard(player)
