@@ -22,18 +22,30 @@ class GameCore(private val ui : UI)
             return false
         }
 
-        player.move(play.roll)
-        ui.playerMovedMessage(player, currentCategory(player))
+        move(player, play)
 
-        println(currentCategory(player).takeCard())
+        takeQuestionCard(player)
 
-        if (play.answeredCorrectly) {
+        answerQuestion(play.answeredCorrectly, player)
+
+        return player.isWinner()
+    }
+
+    private fun answerQuestion(answeredCorrectly: Boolean, player: Player) =
+        if (answeredCorrectly) {
             answerCorrectly(player)
         } else {
             answerIncorrectly(player)
         }
 
-        return player.isWinner()
+    private fun takeQuestionCard(player: Player) {
+        val card = currentCategory(player).takeCard()
+        println(card)
+    }
+
+    private fun move(player: Player, play: Game.Play) {
+        player.move(play.roll)
+        ui.playerMovedMessage(player, currentCategory(player))
     }
 
     private fun answerIncorrectly(player: Player) {
