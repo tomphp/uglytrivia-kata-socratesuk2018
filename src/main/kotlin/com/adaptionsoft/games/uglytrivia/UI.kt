@@ -13,5 +13,5 @@ interface UI {
 
     fun stuckInPenaltyBoxMessage(player: Player)
 
-    fun askQuestion(card: String)
+    fun readCard(card: String)
 }

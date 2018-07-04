@@ -1,7 +1,7 @@
 package com.adaptionsoft.games.uglytrivia
 
 class ConsoleUI : UI {
-    override fun askQuestion(card: String) {
+    override fun readCard(card: String) {
         println(card)
     }
 

@@ -46,7 +46,7 @@ class GameCore(private val ui : UI)
 
     private fun takeQuestionCard(player: Player) {
         val card = currentCategory(player).takeCard()
-        ui.askQuestion(card)
+        ui.readCard(card)
     }
 
     private fun move(player: Player, play: Game.Play) {
