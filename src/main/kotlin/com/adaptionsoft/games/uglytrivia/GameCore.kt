@@ -28,15 +28,23 @@ class GameCore(private val ui : UI)
         println(currentCategory(player).takeCard())
 
         if (play.answeredCorrectly) {
-            player.incrementScore()
-            ui.playerAnsweredCorrectlyMessage(player)
+            answerCorrectly(player)
         } else {
-            ui.playerAnsweredIncorrectlyMessage(player)
-            player.hasEvenBeenInThePenaltyBox = true
-            penaltyBox.add(player)
+            answerIncorrectly(player)
         }
 
         return player.isWinner()
+    }
+
+    private fun answerIncorrectly(player: Player) {
+        ui.playerAnsweredIncorrectlyMessage(player)
+        player.hasEvenBeenInThePenaltyBox = true
+        penaltyBox.add(player)
+    }
+
+    private fun answerCorrectly(player: Player) {
+        player.incrementScore()
+        ui.playerAnsweredCorrectlyMessage(player)
     }
 
     private fun bugAddPlayerToThePenaltyBoxIfTheyHaveEverBeenThere(player: Player) {
