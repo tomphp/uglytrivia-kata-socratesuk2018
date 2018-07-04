@@ -28,10 +28,8 @@ class GameCore(private val ui : UI)
         println(currentCategory(player).takeCard())
 
         if (play.answeredCorrectly) {
-            if (!penaltyBox.contains(player)) {
-                player.incrementScore()
-                ui.playerAnsweredCorrectlyMessage(player)
-            }
+            player.incrementScore()
+            ui.playerAnsweredCorrectlyMessage(player)
         } else {
             ui.playerAnsweredIncorrectlyMessage(player)
             player.hasEvenBeenInThePenaltyBox = true
