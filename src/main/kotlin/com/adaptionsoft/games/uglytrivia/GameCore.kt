@@ -1,25 +1,28 @@
 package com.adaptionsoft.games.uglytrivia
 
-class GameCore()
+class GameCore : UI
 {
     private val popCategory = QuestionCategory("Pop")
     private val scienceCategory = QuestionCategory("Science")
     private val sportsCategory = QuestionCategory("Sports")
     private val rockCategory = QuestionCategory("Rock")
 
+    private val penaltyBox = PenaltyBox(this)
+
     fun playTurn(player: Player, play: Game.Play): Boolean {
         playerRolledMessage(player, play.roll)
 
-        var inPenaltyBox = player.inPenaltyBox
+        // This is a bug in the logic
+        if (player.hasEvenBeenInThePenaltyBox) {
+            penaltyBox.add(player)
+        }
 
-        if (inPenaltyBox) {
-            if (play.roll.isEven()) {
-                stuckInPenaltyBoxMessage(player)
-                return false
-            }
+        if (penaltyBox.contains(player)) {
+            penaltyBox.attemptEscape(player, play.roll)
+        }
 
-            gettingOutOfPenaltyBoxMessage(player)
-            inPenaltyBox = false
+        if (penaltyBox.contains(player)) {
+            return false
         }
 
         player.move(play.roll)
@@ -28,13 +31,14 @@ class GameCore()
         askQuestion(player)
 
         if (play.answeredCorrectly) {
-            if (!inPenaltyBox) {
+            if (!penaltyBox.contains(player)) {
                 player.incrementScore()
                 playerAnsweredCorrectlyMessage(player)
             }
         } else {
             playerAnsweredIncorrectlyMessage(player)
-            player.inPenaltyBox = true
+            player.hasEvenBeenInThePenaltyBox = true
+            penaltyBox.add(player)
         }
 
         return player.isWinner()
@@ -71,11 +75,11 @@ class GameCore()
         println("The category is " + currentCategory(currentPlayer).name)
     }
 
-    private fun gettingOutOfPenaltyBoxMessage(currentPlayer: Player) {
+    override fun gettingOutOfPenaltyBoxMessage(currentPlayer: Player) {
         println("${currentPlayer.name} is getting out of the penalty box")
     }
 
-    private fun stuckInPenaltyBoxMessage(currentPlayer: Player) {
+    override fun stuckInPenaltyBoxMessage(currentPlayer: Player) {
         println("${currentPlayer.name} is not getting out of the penalty box")
     }
 }

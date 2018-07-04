@@ -5,7 +5,7 @@ data class Player(val name: String) {
 
     var place: Int = 0
     var purse: Int = 0
-    var inPenaltyBox: Boolean = false
+    var hasEvenBeenInThePenaltyBox: Boolean = false
 
     fun move(roll: Roll) {
 
