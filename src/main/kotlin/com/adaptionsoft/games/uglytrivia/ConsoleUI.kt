@@ -1,6 +1,10 @@
 package com.adaptionsoft.games.uglytrivia
 
 class ConsoleUI : UI {
+    override fun askQuestion(card: String) {
+        println(card)
+    }
+
     override fun playerRolledMessage(currentPlayer: Player, roll: Roll) {
         println(currentPlayer.name + " is the current player")
         println("They have rolled a " + roll.value)
