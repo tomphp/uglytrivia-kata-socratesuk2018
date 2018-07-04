@@ -12,10 +12,7 @@ class GameCore(private val ui : UI)
     fun playTurn(player: Player, play: Game.Play): Boolean {
         ui.playerRolledMessage(player, play.roll)
 
-        // This is a bug in the logic
-        if (player.hasEvenBeenInThePenaltyBox) {
-            penaltyBox.add(player)
-        }
+        bugAddPlayerToThePenaltyBoxIfTheyHaveEverBeenThere(player)
 
         if (penaltyBox.contains(player)) {
             penaltyBox.attemptEscape(player, play.roll)
@@ -28,7 +25,7 @@ class GameCore(private val ui : UI)
         player.move(play.roll)
         ui.playerMovedMessage(player, currentCategory(player))
 
-        askQuestion(player)
+        println(currentCategory(player).takeCard())
 
         if (play.answeredCorrectly) {
             if (!penaltyBox.contains(player)) {
@@ -44,8 +41,10 @@ class GameCore(private val ui : UI)
         return player.isWinner()
     }
 
-    private fun askQuestion(player: Player) {
-        println(currentCategory(player).takeCard())
+    private fun bugAddPlayerToThePenaltyBoxIfTheyHaveEverBeenThere(player: Player) {
+        if (player.hasEvenBeenInThePenaltyBox) {
+            penaltyBox.add(player)
+        }
     }
 
     private fun currentCategory(player: Player): QuestionCategory = when (player.place) {
