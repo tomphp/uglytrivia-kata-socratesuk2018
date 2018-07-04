@@ -4,7 +4,7 @@ class Game {
     var players = Players()
 
     private var roll = Roll(1) // Rubbish default
-    private val gameEngine = GameCore()
+    private val gameEngine = GameCore(ConsoleUI())
 
     class Play(val roll: Roll, val answeredCorrectly: Boolean = false)
 
